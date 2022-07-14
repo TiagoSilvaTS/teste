@@ -1,9 +1,8 @@
 package com.testing.demo.integration;
 
-import com.testing.demo.dto.TestDto;
-import com.testing.demo.persistence.entity.TestEntity;
+import com.testing.demo.dto.UserDto;
+import com.testing.demo.enums.UserType;
 import com.testing.demo.service.TestServiceImpl;
-import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ public class Test_test_int {
 
     @Test
     void methodCreateTestShouldReturnTestEntity(){
-      var testEntity = new TestDto("pao");
+      var testEntity = new UserDto("pao","teste","teste", UserType.ADMIN);
       var result = testService.createTest(testEntity);
 
         Assertions.assertEquals(testEntity.getName(),result.getName());

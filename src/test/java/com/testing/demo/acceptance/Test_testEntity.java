@@ -1,8 +1,9 @@
 package com.testing.demo.acceptance;
 
 
-import com.testing.demo.dto.TestDto;
-import com.testing.demo.persistence.entity.TestEntity;
+import com.testing.demo.dto.UserDto;
+import com.testing.demo.enums.UserType;
+import com.testing.demo.persistence.entity.UserEntity;
 import com.testing.demo.persistence.repository.TestRepo;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -34,9 +35,9 @@ public class Test_testEntity {
     }
     @Test
     void postTestShouldReturn200() {
-        when(testRepository.save(Mockito.any(TestEntity.class))).thenReturn(new TestEntity(1,"panados"));
+        when(testRepository.save(Mockito.any(UserEntity.class))).thenReturn(new UserEntity(1,"pao","teste","teste", UserType.ADMIN));
         Response response = given().contentType(ContentType.JSON)
-                .body(new TestDto("panados"))
+                .body(new UserDto("panados","teste@gmail.com","131231231a", UserType.ADMIN))
                 .when()
                 .post("/test")
                 .then()
@@ -44,21 +45,21 @@ public class Test_testEntity {
         Assertions.assertEquals(200, response.statusCode());
         System.out.println(response.body().asString());
 
-        verify(testRepository, times(1)).save(any(TestEntity.class));
+        verify(testRepository, times(1)).save(any(UserEntity.class));
 
 
-        Assertions.assertEquals("panados", response.jsonPath().getString("name"));
+        Assertions.assertEquals("pao", response.jsonPath().getString("name"));
     }
 
     @Test
     void postTestShouldReturn409() {
         Response response = given().contentType(ContentType.JSON)
-                .body(new TestDto("pao"))
+                .body(new UserDto("pao","teste","teste", UserType.ADMIN))
                 .when()
                 .post("/test")
                 .then()
                 .extract().response();
-        Assertions.assertEquals(409, response.statusCode());
+        Assertions.assertEquals(400, response.statusCode());
         System.out.println(response.body().asString());
         Assertions.assertEquals("/test", response.jsonPath().getString("path"));
         Assertions.assertEquals("POST", response.jsonPath().getString("httpMethod"));

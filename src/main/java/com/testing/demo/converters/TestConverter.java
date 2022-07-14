@@ -1,7 +1,7 @@
 package com.testing.demo.converters;
 
-import com.testing.demo.dto.TestDto;
-import com.testing.demo.persistence.entity.TestEntity;
+import com.testing.demo.dto.UserDto;
+import com.testing.demo.persistence.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 
@@ -9,9 +9,13 @@ import org.springframework.stereotype.Component;
 public class TestConverter {
 
 
-public TestEntity TestDtotoTest(TestDto test){
-    return TestEntity.builder()
-            .name(test.getName()).build();
+public UserEntity TestDtotoTest(UserDto test){
+    return UserEntity.builder()
+            .name(test.getName())
+            .email(test.getEmail())
+            .role(test.getRole())
+            .password(test.getPassword())
+            .build();
 }
 
 }

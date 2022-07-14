@@ -9,12 +9,13 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @Builder
 public class AppError {
-    private String message;
+    private List<String> message;
     private String exception;
     private String path;
     private String httpMethod;
