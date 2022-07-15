@@ -22,3 +22,11 @@ spring:
         default-page-size: 10
 server:
   port: 5021
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_EXPIRATION}
+  bcrypt:
+    salt: ${BCRYPT_SALT}
+  uuid:
+    value: ${UUID}

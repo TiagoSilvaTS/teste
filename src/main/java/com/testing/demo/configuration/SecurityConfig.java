@@ -1,6 +1,10 @@
 package com.testing.demo.configuration;
 
 
+import com.testing.demo.security.UserAuthenticationEntryPoint;
+import com.testing.demo.security.UserAuthenticationProvider;
+import com.testing.demo.security.filters.CookieFilter;
+import com.testing.demo.security.filters.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +15,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -21,15 +27,18 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig  {
 
+    private final UserAuthenticationEntryPoint authenticationEntryPoint;
+    private final UserAuthenticationProvider authenticationProvider;
 
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .cors()
                 .and()
+                .addFilterBefore(new JwtFilter(authenticationProvider), BasicAuthenticationFilter.class)
+                .addFilterBefore(new CookieFilter(authenticationProvider), JwtFilter.class)
                 .csrf()
                 .disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -42,7 +51,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/"
                 )
                 .permitAll()
+                .and().authorizeRequests()
+                .antMatchers(HttpMethod.POST,
+                        "/test",
+                        "/login"
+                ).permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
         ;
+        return http.build();
     }
 
 

@@ -13,10 +13,7 @@ import javax.validation.constraints.Pattern;
 @Builder
 public class LoginDto {
 
-    @NotNull(message="Email should not be empty")
-    private String email;
-
-   @NotNull(message="Password must not be empty")
-    private String password;
+    private PrincipalDto principalDto;
+    private String token;
 
 }
